@@ -3,7 +3,7 @@ FROM eclipse-temurin:17 as app-build
 ENV APP_BUILD_DIR=/opt/build
 
 WORKDIR ${APP_BUILD_DIR}
-COPY ./target/wasp-core-*.jar ./wasp-core.jar
+COPY ./wasp-core/target/wasp-core-*.jar ./wasp-core.jar
 RUN java -Djarmode=layertools -jar wasp-core.jar extract
 
 FROM eclipse-temurin:17
