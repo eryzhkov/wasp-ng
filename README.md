@@ -1,4 +1,4 @@
-# WASP NG Core
+# WASP NG
 
 ## How to build and start?
 
