@@ -2,33 +2,40 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.3.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>ru.vsu.uic.wasp.ng</groupId>
-	<artifactId>wasp-core</artifactId>
+	<artifactId>wasp-ng</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>wasp-core</name>
-	<description>WASP Core Next Generation</description>
-	<url/>
+	<name>wasp-ng</name>
+	<packaging>pom</packaging>
+
+	<description>WASP Next Generation</description>
+
 	<licenses>
 		<license/>
 	</licenses>
+
 	<developers>
 		<developer>
 			<name>Evgeny Ryzhkov</name>
 			<email>evgeny.ryzhkov@gmail.com</email>
 		</developer>
 	</developers>
+
 	<scm>
-		<connection/>
-		<developerConnection/>
+		<connection>scm:git:git@gitlab.com:eryzhkov/wasp-ng.git</connection>
+		<developerConnection>scm:git:git@gitlab.com:eryzhkov/wasp-ng.git</developerConnection>
 		<tag/>
 		<url/>
 	</scm>
+
 	<profiles>
 		<profile>
 			<id>local</id>
@@ -46,9 +53,15 @@
 			</properties>
 		</profile>
 	</profiles>
+
 	<properties>
 		<java.version>17</java.version>
 	</properties>
+
+	<modules>
+		<module>wasp-core</module>
+	</modules>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
