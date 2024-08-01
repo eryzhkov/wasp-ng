@@ -7,7 +7,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-  <changeSet id="20240801-03" author="eryzhkov">
+  <changeSet id="20240801-05" author="eryzhkov">
 
     <createTable tableName="roles" schemaName="core" remarks="The supported user roles.">
       <column name="id" type="java.util.UUID" defaultValueComputed="uuid_generate_v4()" remarks="The unique identifier.">

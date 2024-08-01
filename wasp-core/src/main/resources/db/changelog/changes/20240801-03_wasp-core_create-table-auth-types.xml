@@ -7,11 +7,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-  <changeSet id="20240801-01" author="eryzhkov">
-
-    <sql dbms="postgresql" endDelimiter=";">
-      CREATE SCHEMA IF NOT EXISTS core;
-    </sql>
+  <changeSet id="20240801-03" author="eryzhkov">
 
     <createTable tableName="auth_types" schemaName="core" remarks="The supported authentication types.">
       <column name="id" type="java.util.UUID" defaultValueComputed="uuid_generate_v4()" remarks="The unique identifier.">
