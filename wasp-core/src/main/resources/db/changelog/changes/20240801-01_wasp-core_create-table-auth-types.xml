@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+  <changeSet id="20240801-01" author="eryzhkov">
+
+    <sql dbms="postgresql" endDelimiter=";">
+      CREATE SCHEMA IF NOT EXISTS core;
+    </sql>
+
+    <createTable tableName="auth_types" schemaName="core" remarks="The supported authentication types.">
+      <column name="id" type="java.util.UUID" defaultValueComputed="uuid_generate_v4()" remarks="The unique identifier.">
+        <constraints primaryKey="true" primaryKeyName="pk_auth_types" nullable="false"/>
+      </column>
+      <column name="auth_type_code" type="text" remarks="The authentication code mnemonic.">
+        <constraints nullable="false" unique="true" uniqueConstraintName="auth_types_un"/>
+      </column>
+      <column name="auth_type_name" type="text" remarks="The human readable label of the authentication type.">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <insert tableName="auth_types" schemaName="core">
+      <column name="auth_type_code" value="INT_WASP"/>
+      <column name="auth_type_name" value="WASP"/>
+    </insert>
+
+    <insert tableName="auth_types" schemaName="core">
+      <column name="auth_type_code" value="EXT_RADIUS"/>
+      <column name="auth_type_name" value="RADIUS-сервер"/>
+    </insert>
+  </changeSet>
+
+</databaseChangeLog>
