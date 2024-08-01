@@ -16,7 +16,7 @@
       <column name="login" type="varchar(50)" remarks="The login.">
         <constraints nullable="false" unique="true" uniqueConstraintName="logins_un"/>
       </column>
-      <column name="password" type="text" remarks="The encrypted password. Used only if a user has INT_WASP authentication type.">
+      <column name="password" type="varchar(60)" remarks="The encrypted password. Used only if a user has INT_WASP authentication type.">
         <constraints nullable="true"/>
       </column>
       <column name="first_name" type="text" remarks="The first name.">
@@ -44,17 +44,6 @@
         <constraints nullable="false" referencedTableSchemaName="core" referencedTableName="user_statuses" referencedColumnNames="id" foreignKeyName="fk_user_statuses"/>
       </column>
     </createTable>
-
-    <sql endDelimiter=";">
-      insert into core.users (login, password, first_name, last_name, created_at, ref_auth_types, ref_user_statuses)
-      select 'admin@wasp',
-             crypt('password', '1234567'),
-             'Admin',
-             'Admin',
-             now(),
-             (select id from core.auth_types where auth_type_code = 'INT_WASP'),
-             (select id from core.user_statuses where user_status_code = 'ACTIVE');
-    </sql>
 
   </changeSet>
 
