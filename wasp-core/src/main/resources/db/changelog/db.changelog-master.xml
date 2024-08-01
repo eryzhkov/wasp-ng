@@ -7,6 +7,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
+  <include relativeToChangelogFile="true" file="changes/20240801-03_wasp-core_create-table-roles.xml"/>
   <include relativeToChangelogFile="true" file="changes/20240801-02_wasp-core_create-table-user-statuses.xml"/>
   <include relativeToChangelogFile="true" file="changes/20240801-01_wasp-core_create-table-auth-types.xml"/>
 
