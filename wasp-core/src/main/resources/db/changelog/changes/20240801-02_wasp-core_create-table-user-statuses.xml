@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+  <changeSet id="20240801-02" author="eryzhkov">
+
+    <createTable tableName="user_statuses" schemaName="core" remarks="The supported user statuses.">
+      <column name="id" type="java.util.UUID" defaultValueComputed="uuid_generate_v4()" remarks="The unique identifier.">
+        <constraints primaryKey="true" primaryKeyName="pk_user_statuses" nullable="false"/>
+      </column>
+      <column name="user_status_code" type="text" remarks="The user status mnemonic.">
+        <constraints nullable="false" unique="true" uniqueConstraintName="user_statuses_un"/>
+      </column>
+      <column name="user_status_name" type="text" remarks="The human readable label of the user status.">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <insert tableName="user_statuses" schemaName="core">
+      <column name="user_status_code" value="ACTIVE"/>
+      <column name="user_status_name" value="Активный"/>
+    </insert>
+
+    <insert tableName="user_statuses" schemaName="core">
+      <column name="user_status_code" value="BLOCKED"/>
+      <column name="user_status_name" value="Заблокирован"/>
+    </insert>
+
+    <insert tableName="user_statuses" schemaName="core">
+      <column name="user_status_code" value="DELETED"/>
+      <column name="user_status_name" value="Удален"/>
+    </insert>
+
+  </changeSet>
+
+</databaseChangeLog>
