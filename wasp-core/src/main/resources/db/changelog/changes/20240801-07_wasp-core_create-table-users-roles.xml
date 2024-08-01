@@ -24,23 +24,6 @@
       </column>
     </createTable>
 
-    <sql endDelimiter=";">
-      insert into core.users_roles (created_at, ref_roles, ref_users)
-      select now(),
-             (select id from core.roles where role_code = 'USER_MANAGER'),
-             (select id from core.users where login = 'admin@wasp');
-
-      insert into core.users_roles (created_at, ref_roles, ref_users)
-      select now(),
-             (select id from core.roles where role_code = 'REPO_MANAGER'),
-             (select id from core.users where login = 'admin@wasp');
-
-      insert into core.users_roles (created_at, ref_roles, ref_users)
-      select now(),
-             (select id from core.roles where role_code = 'CONTENT_MANAGER'),
-             (select id from core.users where login = 'admin@wasp');
-    </sql>
-
   </changeSet>
 
 </databaseChangeLog>
