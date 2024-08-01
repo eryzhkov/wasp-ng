@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+  <changeSet id="20240801-07" author="eryzhkov">
+
+    <createTable tableName="users_roles" schemaName="core" remarks="The roles assigned to a user.">
+      <column name="id" type="java.util.UUID" defaultValueComputed="uuid_generate_v4()" remarks="The unique identifier.">
+        <constraints primaryKey="true" primaryKeyName="pk_users_roles" nullable="false"/>
+      </column>
+      <column name="created_at" type="java.sql.Types.TIMESTAMP_WITH_TIMEZONE" remarks="When a role was assigned.">
+        <constraints nullable="false"/>
+      </column>
+      <column name="ref_roles" type="JAVA.UTIL.UUID" remarks="A reference to the role.">
+        <constraints nullable="false" referencedTableSchemaName="core" referencedTableName="roles" referencedColumnNames="id" foreignKeyName="fk_roles"/>
+      </column>
+      <column name="ref_users" type="JAVA.UTIL.UUID" remarks="A reference to the user.">
+        <constraints nullable="false" referencedTableSchemaName="core" referencedTableName="users" referencedColumnNames="id" foreignKeyName="fk_users"/>
+      </column>
+    </createTable>
+
+    <sql endDelimiter=";">
+      insert into core.users_roles (created_at, ref_roles, ref_users)
+      select now(),
+             (select id from core.roles where role_code = 'USER_MANAGER'),
+             (select id from core.users where login = 'admin@wasp');
+
+      insert into core.users_roles (created_at, ref_roles, ref_users)
+      select now(),
+             (select id from core.roles where role_code = 'REPO_MANAGER'),
+             (select id from core.users where login = 'admin@wasp');
+
+      insert into core.users_roles (created_at, ref_roles, ref_users)
+      select now(),
+             (select id from core.roles where role_code = 'CONTENT_MANAGER'),
+             (select id from core.users where login = 'admin@wasp');
+    </sql>
+
+  </changeSet>
+
+</databaseChangeLog>
