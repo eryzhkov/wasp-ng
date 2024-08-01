@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+  <changeSet id="20240801-03" author="eryzhkov">
+
+    <createTable tableName="roles" schemaName="core" remarks="The supported user roles.">
+      <column name="id" type="java.util.UUID" defaultValueComputed="uuid_generate_v4()" remarks="The unique identifier.">
+        <constraints primaryKey="true" primaryKeyName="pk_roles" nullable="false"/>
+      </column>
+      <column name="role_code" type="text" remarks="The role mnemonic.">
+        <constraints nullable="false" unique="true" uniqueConstraintName="roles_un"/>
+      </column>
+      <column name="role_label" type="text" remarks="The human readable label of the role.">
+        <constraints nullable="false"/>
+      </column>
+      <column name="role_description" type="text" remarks="The description of the role.">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <insert tableName="roles" schemaName="core">
+      <column name="role_code" value="AUTHENTICATED_USER"/>
+      <column name="role_label" value="Аутентифицированный пользователь"/>
+      <column name="role_description" value="Присваивается автоматически всем пользователям, успешно прошедшим аутентификацию"/>
+    </insert>
+
+    <insert tableName="roles" schemaName="core">
+      <column name="role_code" value="USER_MANAGER"/>
+      <column name="role_label" value="Управление пользователями"/>
+      <column name="role_description" value="Дает право на добавление пользователя, изменение его профиля и набора ролей."/>
+    </insert>
+
+    <insert tableName="roles" schemaName="core">
+      <column name="role_code" value="REPO_MANAGER"/>
+      <column name="role_label" value="Управление контентными репозиториями"/>
+      <column name="role_description" value="Дает право на создание репозитория, изменение его характеристик и состояния, а также на управление внешними клиентами"/>
+    </insert>
+
+    <insert tableName="roles" schemaName="core">
+      <column name="role_code" value="CONTENT_MANAGER"/>
+      <column name="role_label" value="Управление контентом в репозиториях"/>
+      <column name="role_description" value="Дает право на управление контентом в назначенном репозитории"/>
+    </insert>
+
+  </changeSet>
+
+</databaseChangeLog>
