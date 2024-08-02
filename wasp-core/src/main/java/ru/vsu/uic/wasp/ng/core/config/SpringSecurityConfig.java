@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import ru.vsu.uic.wasp.ng.core.service.UserService;
 
 @Configuration
@@ -28,6 +29,18 @@ public class SpringSecurityConfig {
     }
 
     @Bean
+    public CommonsRequestLoggingFilter logFilter() {
+        CommonsRequestLoggingFilter filter
+                = new CommonsRequestLoggingFilter();
+        filter.setIncludeQueryString(true);
+        filter.setIncludePayload(true);
+        filter.setMaxPayloadLength(10000);
+        filter.setIncludeHeaders(true);
+        filter.setAfterMessagePrefix("After request: ");
+        return filter;
+    }
+
+    @Bean
     public AuthenticationManager authenticationManager() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userService);
@@ -40,7 +53,7 @@ public class SpringSecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                         auth.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
-                        .requestMatchers("/", "/static/**", "/actuator/**").permitAll()
+                        .requestMatchers("/", "/auth", "/static/**", "/actuator/**").permitAll()
                         .requestMatchers("/home").authenticated()
                         .requestMatchers("/repos/**").hasRole("REPO_MANAGER")
                         .requestMatchers("/users/**").hasRole("USER_MANAGER")
@@ -51,13 +64,22 @@ public class SpringSecurityConfig {
                 )
                 .formLogin(form -> {
                     form
+                       // Should point to our controller returning the login form
                        .loginPage("/login")
+                       // Any valid URL. Spring Security will use it for internal authentication logic.
+                       // Access to the URL should be available for all (see the configuration above)!
+                       .loginProcessingUrl("/auth")
+                       // Should point to our controller returning the default home page for all authenticated users.
                        .successForwardUrl("/home")
+                       // Should point to our controller returning the default page for login failure.
                        .failureForwardUrl("/login-failed")
                        .permitAll();
                 })
                 .logout(logout -> {
-                    logout.deleteCookies("JSESSIONID");
+                    logout
+                       // Should point to our controller returning the default public page.
+                       .logoutSuccessUrl("/")
+                       .deleteCookies("JSESSIONID");
                 });
         return http.build();
 

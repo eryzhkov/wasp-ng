@@ -11,6 +11,6 @@ public class AccountController {
 
     @GetMapping("")
     public ModelAndView index() {
-        return new ModelAndView("account-view");
+        return new ModelAndView("account/account-view");
     }
 }
