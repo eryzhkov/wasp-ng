@@ -1,3 +1,4 @@
+<#import "/spring.ftl" as spring>
 <!doctype html>
 <html lang="ru">
 <head>

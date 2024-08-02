@@ -1,3 +1,4 @@
+<#import "/spring.ftl" as spring>
 <!doctype html>
 <html lang="ru">
 <head>
@@ -5,7 +6,7 @@
 </head>
 <body>
 <h2>WASP NG Core :: Login</h2>
-<form name='f' action="login" method='POST'>
+<form name='f' action="<@spring.url "/auth"/>" method='POST'>
   <table>
     <tr>
       <td>User:</td>

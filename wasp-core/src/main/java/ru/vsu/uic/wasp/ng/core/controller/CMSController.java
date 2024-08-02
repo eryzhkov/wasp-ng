@@ -11,6 +11,6 @@ public class CMSController {
 
     @GetMapping("")
     public ModelAndView index() {
-        return new ModelAndView("cms-view");
+        return new ModelAndView("cms/cms-view");
     }
 }
