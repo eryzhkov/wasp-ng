@@ -79,6 +79,8 @@ public class SpringSecurityConfig {
                     logout
                        // Should point to our controller returning the default public page.
                        .logoutSuccessUrl("/")
+                       .invalidateHttpSession(true)
+                       .clearAuthentication(true)
                        .deleteCookies("JSESSIONID");
                 });
         return http.build();
