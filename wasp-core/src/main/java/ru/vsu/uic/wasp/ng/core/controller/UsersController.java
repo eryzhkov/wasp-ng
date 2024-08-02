@@ -5,12 +5,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("users")
+@RequestMapping("/users")
 public class UsersController {
 
     @GetMapping("")
     public String index() {
-        return "users-view";
+        return "users/users-view";
     }
 
 }

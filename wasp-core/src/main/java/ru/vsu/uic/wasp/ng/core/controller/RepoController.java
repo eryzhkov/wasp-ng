@@ -11,6 +11,6 @@ public class RepoController {
 
     @GetMapping("")
     public ModelAndView index() {
-        return new ModelAndView("repos-view");
+        return new ModelAndView("repos/repos-view");
     }
 }
