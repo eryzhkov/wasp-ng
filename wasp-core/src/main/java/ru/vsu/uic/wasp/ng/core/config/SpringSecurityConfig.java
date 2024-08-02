@@ -40,7 +40,7 @@ public class SpringSecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                         auth.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
-                        .requestMatchers("/static/**", "/").permitAll()
+                        .requestMatchers("/", "/static/**", "/actuator/**").permitAll()
                         .requestMatchers("/home").authenticated()
                         .requestMatchers("/repos/**").hasRole("REPO_MANAGER")
                         .requestMatchers("/users/**").hasRole("USER_MANAGER")

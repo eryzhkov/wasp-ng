@@ -48,3 +48,5 @@ $ docker compose up
 ```
 
 The application is available at http://localhost:8888/wasp (by default).
+
+The actuator is available at http://localhost:8889/actuator (by default)
