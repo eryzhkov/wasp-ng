@@ -10,9 +10,9 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>wasp-ng-core</artifactId>
+  <artifactId>wasp-core</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>wasp-ng-core</name>
+  <name>wasp-core</name>
   <description>WASP NG Core module</description>
 
   <build>
