@@ -10,8 +10,8 @@ FROM eclipse-temurin:17
 
 ENV APP_BUILD_DIR=/opt/build
 
-RUN groupadd --gid 1000 wasp \
-  && useradd --uid 1000 --gid wasp --shell /bin/bash --create-home wasp-core
+RUN groupadd wasp \
+  && useradd --gid wasp --shell /bin/bash --create-home wasp-core
 USER wasp-core:wasp
 WORKDIR /opt/wasp-core
 
