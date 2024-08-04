@@ -1,7 +1,5 @@
-<#import "/spring.ftl" as spring>
-
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>WASP/NextGen :: Login Failed</title>
   <meta charset="UTF-8">
@@ -12,14 +10,14 @@
 <!-- Navigation bar -->
 <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
   <div class="container-fluid">
-    <div class="navbar-brand">WASP</div>
+    <div class="navbar-brand"><a th:href="@{/home}">WASP</a></div>
   </div>
 </nav>
 <!-- Main content -->
 <div class="container-md pt-5">
   <div class="row">
     <div class="col-md-6 offset-md-3 alert alert-danger text-center">
-      <p><strong>Login failed!</strong> <a href="<@spring.url "/login"/>">Try again</a>.</p>
+      <p><strong>Login failed!</strong> <a th:href="@{/login}">Let's try again</a>...</p>
     </div>
   </div>
 </div>

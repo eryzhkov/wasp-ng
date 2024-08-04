@@ -1,7 +1,5 @@
-<#import "/spring.ftl" as spring>
-
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>WASP/NextGen :: Public</title>
   <meta charset="UTF-8">
@@ -19,7 +17,7 @@
 <div class="container-md pt-5">
   <div class="row">
     <div class="col-md-6 offset-md-3 text-center">
-      <p><strong><a href="<@spring.url "/login"/>" class="btn btn-primary">Try to login...</a></strong></p>
+      <p><strong><a th:href="@{/login}" class="btn btn-primary">Try to login...</a></strong></p>
     </div>
   </div>
 </div>
