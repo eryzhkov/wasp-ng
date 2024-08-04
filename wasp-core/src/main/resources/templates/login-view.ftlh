@@ -1,25 +1,39 @@
 <#import "/spring.ftl" as spring>
-<!doctype html>
-<html lang="ru">
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>WASP NG Core :: Login</title>
+  <title>WASP/NextGen :: Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<h2>WASP NG Core :: Login</h2>
-<form name='f' action="<@spring.url "/auth"/>" method='POST'>
-  <table>
-    <tr>
-      <td>User:</td>
-      <td><input type='text' name='username' value=''></td>
-    </tr>
-    <tr>
-      <td>Password:</td>
-      <td><input type='password' name='password' /></td>
-    </tr>
-    <tr>
-      <td><input name="submit" type="submit" value="submit" /></td>
-    </tr>
-  </table>
-</form>
+<!-- Navigation bar -->
+<nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+  <div class="container-fluid">
+    <div class="navbar-brand">WASP</div>
+  </div>
+</nav>
+<!-- Main content -->
+<div class="container-md">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <form id="login" name="login" method="post" action="<@spring.url "/auth"/>">
+        <div class="mb-3 mt-3">
+          <label for="username" class="form-label">Login:</label>
+          <input id="username" name="username" class="form-control" type="text"/>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password:</label>
+          <input id="password" name="password" class="form-control" type="password"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Load scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
