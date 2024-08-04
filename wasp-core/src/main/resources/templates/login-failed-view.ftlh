@@ -19,7 +19,7 @@
 <div class="container-md pt-5">
   <div class="row">
     <div class="col-md-6 offset-md-3 alert alert-danger text-center">
-      <p><strong>Login failed!</strong> <a href="<@spring.url "/login"/>">Tray again</a>.</p>
+      <p><strong>Login failed!</strong> <a href="<@spring.url "/login"/>">Try again</a>.</p>
     </div>
   </div>
 </div>
