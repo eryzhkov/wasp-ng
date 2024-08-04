@@ -28,6 +28,7 @@ public class SpringSecurityConfig {
         return new BCryptPasswordEncoder(10);
     }
 
+    //TODO Remove request logging?
     @Bean
     public CommonsRequestLoggingFilter logFilter() {
         CommonsRequestLoggingFilter filter
