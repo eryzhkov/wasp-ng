@@ -1,12 +1,10 @@
 package ru.vsu.uic.wasp.ng.core.config;
 
 import jakarta.servlet.DispatcherType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -14,14 +12,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
-import ru.vsu.uic.wasp.ng.core.service.UserService;
+import ru.vsu.uic.wasp.ng.core.security.WaspAuthenticationProvider;
 
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig {
+    private final WaspAuthenticationProvider waspAuthenticationProvider;
 
-    @Autowired
-    private UserService userService;
+    public SpringSecurityConfig(WaspAuthenticationProvider waspAuthenticationProvider) {
+        this.waspAuthenticationProvider = waspAuthenticationProvider;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -42,11 +42,15 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager() {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userService);
-        authenticationProvider.setPasswordEncoder(passwordEncoder());
-        return new ProviderManager(authenticationProvider);
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+
+        waspAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        authenticationManagerBuilder.authenticationProvider(waspAuthenticationProvider);
+
+        return authenticationManagerBuilder.build();
     }
 
     @Bean
@@ -63,19 +67,17 @@ public class SpringSecurityConfig {
                         .requestMatchers("/logout").authenticated()
                         .anyRequest().denyAll()
                 )
-                .formLogin(form -> {
-                    form
-                       // Should point to our controller returning the login form
-                       .loginPage("/login")
-                       // Any valid URL. Spring Security will use it for internal authentication logic.
-                       // Access to the URL should be available for all (see the configuration above)!
-                       .loginProcessingUrl("/auth")
-                       // Should point to our controller returning the default home page for all authenticated users.
-                       .successForwardUrl("/home")
-                       // Should point to our controller returning the default page for login failure.
-                       .failureForwardUrl("/login-failed")
-                       .permitAll();
-                })
+                .formLogin(form -> form
+                   // Should point to our controller returning the login form
+                   .loginPage("/login")
+                   // Any valid URL. Spring Security will use it for internal authentication logic.
+                   // Access to the URL should be available for all (see the configuration above)!
+                   .loginProcessingUrl("/auth")
+                   // Should point to our controller returning the default home page for all authenticated users.
+                   .successForwardUrl("/home")
+                   // Should point to our controller returning the default page for login failure.
+                   .failureForwardUrl("/login-failed")
+                   .permitAll())
                 .logout(logout -> {
                     logout
                        // Should point to our controller returning the default public page.
