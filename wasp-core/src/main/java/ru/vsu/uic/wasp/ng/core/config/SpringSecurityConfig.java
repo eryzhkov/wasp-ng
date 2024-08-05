@@ -9,14 +9,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.BCryptVersion;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.filter.CommonsRequestLoggingFilter;
+import ru.vsu.uic.wasp.ng.core.security.WaspAccessDeniedHandler;
 import ru.vsu.uic.wasp.ng.core.security.WaspAuthenticationProvider;
 
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig {
+
+    private static final int BCRYPT_STRENGTH = 10;
     private final WaspAuthenticationProvider waspAuthenticationProvider;
 
     public SpringSecurityConfig(WaspAuthenticationProvider waspAuthenticationProvider) {
@@ -25,20 +28,7 @@ public class SpringSecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
-    }
-
-    //TODO Remove request logging?
-    @Bean
-    public CommonsRequestLoggingFilter logFilter() {
-        CommonsRequestLoggingFilter filter
-                = new CommonsRequestLoggingFilter();
-        filter.setIncludeQueryString(true);
-        filter.setIncludePayload(true);
-        filter.setMaxPayloadLength(10000);
-        filter.setIncludeHeaders(true);
-        filter.setAfterMessagePrefix("After request: ");
-        return filter;
+        return new BCryptPasswordEncoder(BCryptVersion.$2A, BCRYPT_STRENGTH);
     }
 
     @Bean
@@ -58,15 +48,19 @@ public class SpringSecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                         auth.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
-                        .requestMatchers("/", "/auth", "/static/**", "/actuator/**").permitAll()
-                        .requestMatchers("/home").authenticated()
-                        .requestMatchers("/repos/**").hasRole("REPO_MANAGER")
-                        .requestMatchers("/users/**").hasRole("USER_MANAGER")
-                        .requestMatchers("/cms/**").hasRole("CONTENT_MANAGER")
-                        .requestMatchers("/account/**").authenticated()
-                        .requestMatchers("/logout").authenticated()
-                        .anyRequest().denyAll()
+                                .requestMatchers("/", "/auth", "/static/**", "/actuator/**").permitAll()
+                                .requestMatchers("/home").authenticated()
+                                .requestMatchers("/repos/**").hasRole("REPO_MANAGER")
+                                .requestMatchers("/users/**").hasRole("USER_MANAGER")
+                                .requestMatchers("/cms/**").hasRole("CONTENT_MANAGER")
+                                .requestMatchers("/account/**").authenticated()
+                                .requestMatchers("/access-denied").authenticated()
+                                .requestMatchers("/logout").authenticated()
+                                .anyRequest().denyAll()
                 )
+                .exceptionHandling(eh -> {
+                    eh.accessDeniedHandler(new WaspAccessDeniedHandler());
+                })
                 .formLogin(form -> form
                    // Should point to our controller returning the login form
                    .loginPage("/login")

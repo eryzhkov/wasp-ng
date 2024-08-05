@@ -28,6 +28,11 @@ public class DefaultController {
         return new ModelAndView("login-failed-view");
     }
 
+    @GetMapping("/access-denied")
+    public ModelAndView accessDenied() {
+        return new ModelAndView("access-denied-view");
+    }
+
     @PostMapping("/home")
     public ModelAndView home() {
         log.info("DefaultController: home()");

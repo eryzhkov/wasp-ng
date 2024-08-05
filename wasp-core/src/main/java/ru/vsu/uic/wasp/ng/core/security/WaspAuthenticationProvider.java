@@ -29,6 +29,8 @@ import java.util.List;
 @Slf4j
 public class WaspAuthenticationProvider implements AuthenticationProvider {
 
+    // The role to be automatically added to all authenticated users.
+    // The prefix 'ROLE_' here is the Spring Security requirement.
     private final static String ROLE_AUTHENTICATED_USER = "ROLE_AUTHENTICATED_USER";
 
     @Value("${spring.security.user.name}")
@@ -41,7 +43,6 @@ public class WaspAuthenticationProvider implements AuthenticationProvider {
     private String embeddedAdminRoles;
 
     private final UserRepository userRepository;
-
     private final RadiusClient radiusClient;
     private PasswordEncoder passwordEncoder;
 
@@ -57,7 +58,8 @@ public class WaspAuthenticationProvider implements AuthenticationProvider {
 
         if (authentication.getCredentials() == null) {
             log.debug("Failed to authenticate since no credentials provided");
-            throw new BadCredentialsException("No password provided for the '%s'.".formatted(authentication.getPrincipal().toString()));
+            throw new BadCredentialsException(
+                    "No password provided for the '%s'.".formatted(authentication.getPrincipal().toString()));
         }
 
         String userName = authentication.getPrincipal().toString();
@@ -79,7 +81,8 @@ public class WaspAuthenticationProvider implements AuthenticationProvider {
                     .build();
 
             log.debug("Authenticated embedded user");
-            return createSuccessAuthentication(embeddedUserDetails.getUsername(), authentication, embeddedUserDetails);
+            return createSuccessAuthentication(embeddedUserDetails.getUsername(), authentication,
+                    embeddedUserDetails.getAuthorities());
         }
 
         // Try to load a user from the database
@@ -103,7 +106,8 @@ public class WaspAuthenticationProvider implements AuthenticationProvider {
                     throw new AuthenticationServiceException("Unexpected error authentication!", e);
                 }
             } else {
-                throw new BadCredentialsException("Unknown authentication type '%s'.".formatted(user.getAuthenticationType().getCode()));
+                throw new BadCredentialsException(
+                        "Unknown authentication type '%s'.".formatted(user.getAuthenticationType().getCode()));
             }
             // Add the default role
             List<SimpleGrantedAuthority> enrichedGrantedAuthorities = new ArrayList<>();
@@ -113,9 +117,8 @@ public class WaspAuthenticationProvider implements AuthenticationProvider {
                 SimpleGrantedAuthority sga = (SimpleGrantedAuthority) ga;
                 enrichedGrantedAuthorities.add(sga);
             }
-            UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken
-                    .authenticated(user, authentication.getCredentials(), this.authoritiesMapper.mapAuthorities(enrichedGrantedAuthorities));
-            token.setDetails(authentication.getDetails());
+            Authentication token = createSuccessAuthentication(user.getUsername(), authentication,
+                    enrichedGrantedAuthorities);
             log.debug("Authenticated user with token: {}", token);
             return token;
         } else {
@@ -132,9 +135,11 @@ public class WaspAuthenticationProvider implements AuthenticationProvider {
         this.passwordEncoder = passwordEncoder;
     }
 
-    protected Authentication createSuccessAuthentication(Object principal, Authentication authentication, UserDetails user) {
+    protected Authentication createSuccessAuthentication(Object principal, Authentication authentication,
+            Collection<? extends GrantedAuthority> authorities) {
         UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken
-                .authenticated(principal, authentication.getCredentials(), this.authoritiesMapper.mapAuthorities(user.getAuthorities()));
+                .authenticated(principal, authentication.getCredentials(),
+                        this.authoritiesMapper.mapAuthorities(authorities));
         token.setDetails(authentication.getDetails());
         return token;
     }
