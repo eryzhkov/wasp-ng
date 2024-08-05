@@ -15,7 +15,7 @@ import lombok.ToString;
 import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.vsu.uic.wasp.ng.core.model.AccountStatus;
+import ru.vsu.uic.wasp.ng.core.security.AccountStatus;
 
 import java.util.Collection;
 import java.util.Objects;
