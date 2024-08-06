@@ -32,6 +32,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Slf4j
 public class RadiusClient {
 
+    @Value("${wasp.radius.auth.enabled:false}")
+    private boolean waspAuthEnabled;
     @Value("${wasp.radius.secret}")
     private String radiusSecret;
 
@@ -50,23 +52,26 @@ public class RadiusClient {
     private UdpRadiusClient radiusClient;
 
     public boolean isAccepted(String userName, String password) throws ExternalSystemException {
+        log.debug("Is RADIUS auth enabled: {}", waspAuthEnabled);
         log.debug("username = {}", userName);
-        boolean accepted;
-        try {
-            log.debug("Build the request...");
-            AccessRequest accessRequest = new AccessRequest(List.of(
-                    new UserName(new TextData(userName)),
-                    new UserPassword(new StringData(password.getBytes(UTF_8))),
-                    new NasIpAddress(new Ipv4AddrData((Inet4Address) Inet4Address.getByName(radiusNasIp))),
-                    new NasIdentifier(new TextData(radiusNasIdentifier))
-            ));
-            log.debug("Send the request...");
-            Packet responsePacket = radiusClient.send(accessRequest);
-            log.debug("Verify the response...");
-            accepted = responsePacket instanceof AccessAccept;
-        } catch (UnknownHostException | RadiusClientException e) {
-            log.error("{}", e.getMessage(), e);
-            throw new ExternalSystemException("Unexpected external system error!", e);
+        boolean accepted = false;
+        if (waspAuthEnabled) {
+            try {
+                log.debug("Build the request...");
+                AccessRequest accessRequest = new AccessRequest(List.of(
+                        new UserName(new TextData(userName)),
+                        new UserPassword(new StringData(password.getBytes(UTF_8))),
+                        new NasIpAddress(new Ipv4AddrData((Inet4Address) Inet4Address.getByName(radiusNasIp))),
+                        new NasIdentifier(new TextData(radiusNasIdentifier))
+                ));
+                log.debug("Send the request...");
+                Packet responsePacket = radiusClient.send(accessRequest);
+                log.debug("Verify the response...");
+                accepted = responsePacket instanceof AccessAccept;
+            } catch (UnknownHostException | RadiusClientException e) {
+                log.error("{}", e.getMessage(), e);
+                throw new ExternalSystemException("Unexpected external system error!", e);
+            }
         }
         log.debug("RADIUS accepted: {}", accepted);
         return accepted;
@@ -74,10 +79,12 @@ public class RadiusClient {
 
     @PostConstruct
     protected void postConstruct() {
-        radiusClient = UdpRadiusClient.newBuilder()
-                .secret(radiusSecret.getBytes(UTF_8))
-                .address(new InetSocketAddress(radiusIp, radiusPort))
-                .build();
+        if (waspAuthEnabled) {
+            radiusClient = UdpRadiusClient.newBuilder()
+                    .secret(radiusSecret.getBytes(UTF_8))
+                    .address(new InetSocketAddress(radiusIp, radiusPort))
+                    .build();
+        }
     }
 
 }
