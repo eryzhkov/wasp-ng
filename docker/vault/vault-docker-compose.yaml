@@ -1,0 +1,8 @@
+services:
+  vault:
+    container_name: "dev-vault"
+    image: hashicorp/vault:latest
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: "wasp"
+    ports:
+      - "8200:8200"

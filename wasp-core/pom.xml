@@ -15,6 +15,11 @@
   <name>wasp-core</name>
   <description>WASP NG Core module</description>
 
+  <properties>
+    <version.thymeleaf>3.1.2.RELEASE</version.thymeleaf>
+    <version.aaa4j>0.3.0</version.aaa4j>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -23,12 +28,12 @@
     <dependency>
       <groupId>org.thymeleaf.extras</groupId>
       <artifactId>thymeleaf-extras-springsecurity6</artifactId>
-      <version>3.1.2.RELEASE</version>
+      <version>${version.thymeleaf}</version>
     </dependency>
     <dependency>
       <groupId>org.aaa4j.radius</groupId>
       <artifactId>aaa4j-radius-client</artifactId>
-      <version>0.3.0</version>
+      <version>${version.aaa4j}</version>
     </dependency>
   </dependencies>
 
