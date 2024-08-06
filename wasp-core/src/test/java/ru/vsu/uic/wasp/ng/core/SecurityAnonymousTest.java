@@ -41,7 +41,7 @@ public class SecurityAnonymousTest {
     void anonymousUserHasAccessToDefaultStartPage() throws Exception {
         this.mvc.perform(MockMvcRequestBuilders.get("/"))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string(containsString("Public Page")))
+                .andExpect(MockMvcResultMatchers.content().string(containsString("Try to login")))
                 .andDo(MockMvcResultHandlers.print());
     }
 
