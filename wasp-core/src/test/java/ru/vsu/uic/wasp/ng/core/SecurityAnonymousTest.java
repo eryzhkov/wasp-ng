@@ -17,9 +17,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.vsu.uic.wasp.ng.test.WaspPostgreSQLContainer;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest()
 @Testcontainers
@@ -98,6 +96,39 @@ public class SecurityAnonymousTest {
                 .param("password", "password"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("/home"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void anonymousUserProvidesEmptyPrincipal() throws Exception {
+        this.mvc.perform(MockMvcRequestBuilders.post("/auth")
+                        .param("username", "")
+                        .param("password", "password"))
+                .andExpect(status().isOk())
+                .andExpect(forwardedUrl("/login-failed"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void anonymousUserProvidesEmptyCredentials() throws Exception {
+        this.mvc.perform(MockMvcRequestBuilders.post("/auth")
+                        .param("username", "admin@wasp")
+                        .param("password", ""))
+                .andExpect(status().isOk())
+                .andExpect(forwardedUrl("/login-failed"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void anonymousUserProvidesEmptyPrincipalAndCredentials() throws Exception {
+        this.mvc.perform(MockMvcRequestBuilders.post("/auth")
+                        .param("username", "")
+                        .param("password", ""))
+                .andExpect(status().isOk())
+                .andExpect(forwardedUrl("/login-failed"))
                 .andDo(MockMvcResultHandlers.print());
     }
 
