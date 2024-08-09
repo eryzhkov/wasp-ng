@@ -51,12 +51,12 @@ public class WaspAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        if (authentication.getPrincipal() == null) {
+        if (authentication.getPrincipal() == null || authentication.getPrincipal().toString().trim().isEmpty()) {
             log.debug("Failed to authenticate since no principal provided");
             throw new BadCredentialsException("No principal provided.");
         }
 
-        if (authentication.getCredentials() == null) {
+        if (authentication.getCredentials() == null || authentication.getCredentials().toString().trim().isEmpty()) {
             log.debug("Failed to authenticate since no credentials provided");
             throw new BadCredentialsException(
                     "No password provided for the '%s'.".formatted(authentication.getPrincipal().toString()));
