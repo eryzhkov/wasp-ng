@@ -17,8 +17,8 @@ The following tools have to be installed:
 Don't forget to set at the project level the following configuration parameters:
 
 ```
-$ git config set user.name="<Your name>"
-$ git config set user.email="<Your email>"
+$ git config user.name "<Your name>"
+$ git config user.email "<Your email>"
 ```
 
 ## How to configure the application before start?
