@@ -1,36 +1,47 @@
 package ru.vsu.uic.wasp.ng.core.dao.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.ToString.Exclude;
 import org.hibernate.Hibernate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.vsu.uic.wasp.ng.core.security.AccountStatus;
 
+import java.time.Instant;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
 @Getter
 @Setter
 @ToString
 public class User implements UserDetails {
 
+    // Set the value automatically. Otherwise, Hibernate can't set the 'userId' property in the UserRoleId object.
+    // The reason is that the property 'id' is not set until the User entity is not stored in the database.
     @Id
-    private UUID id;
+    private UUID id = UUID.randomUUID();
     @Column(name = "login", unique = true, nullable = false)
     private String login;
     @Column(name = "password")
@@ -43,19 +54,77 @@ public class User implements UserDetails {
     private String middleName;
     @Column(name = "comment")
     private String comment;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles",
-               joinColumns = @JoinColumn(name = "ref_users", referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "ref_roles", referencedColumnName = "id"))
-    private Set<Role> roles;
+
+    @OneToMany(
+            // the entity User is referenced by the property 'user' in the UserRole entity
+            mappedBy = "user",
+            // do not use ALL - it leads to the "A different object with the same identifier value was already associated with the session" error
+            cascade = CascadeType.MERGE,
+            // Remove UserRole entities if the corresponding User is deleted
+            orphanRemoval = true
+    )
+    @Exclude
+    private Set<UserRole> roles = new HashSet<>();
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ref_user_statuses")
     private UserStatus status;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ref_auth_types")
     private AuthenticationType authenticationType;
 
-    public User() {}
+    @CreatedDate
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    /**
+     * Adds a new role to the user.
+     *
+     * @param role a role to be added
+     */
+    public void addRole(Role role) {
+        // Create a new UserRole entity.
+        UserRole userRole = new UserRole();
+        // Initialize the UserRole entity
+        userRole.getId().setUserId(this.id);
+        userRole.getId().setRoleId(role.getId());
+        userRole.setUser(this);
+        userRole.setRole(role);
+        // Add the new UserRole entity to the collection of the User entity
+        roles.add(userRole);
+        // Add the new UserRole entity to the collection of the Role entity
+        role.getUsers().add(userRole);
+    }
+
+    /**
+     * Removes the role from the User entity
+     *
+     * @param role a role to be removed
+     */
+    public void removeRole(Role role) {
+        // Loop over all roles of the user.
+        for (Iterator<UserRole> iterator = roles.iterator(); iterator.hasNext(); ) {
+            UserRole userRole = iterator.next();
+            if (userRole.getUser().equals(this) && userRole.getRole().equals(role)) {
+                // Found the role to be revoked from the user in the collection
+
+                // Remove the found UserRole entity from the collection
+                iterator.remove();
+
+                // Remove the same entity from the collection in the Role entity.
+                userRole.getRole().getUsers().remove(userRole);
+
+                // Set all references to null.
+                userRole.setRole(null);
+                userRole.setUser(null);
+            }
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -76,7 +145,11 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
+        Set<Role> roles = new HashSet<>();
+        for (UserRole userRole : this.roles) {
+            roles.add(userRole.getRole());
+        }
+        return roles;
     }
 
     @Override

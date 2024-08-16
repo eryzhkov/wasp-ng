@@ -8,17 +8,16 @@
   <changeSet id="20240801-07" author="eryzhkov">
 
     <createTable tableName="users_roles" schemaName="core" remarks="The roles assigned to a user.">
-      <column name="id" type="java.util.UUID" defaultValueComputed="uuid_generate_v4()" remarks="The unique identifier.">
-        <constraints primaryKey="true" primaryKeyName="pk_users_roles" nullable="false"/>
-      </column>
       <column name="created_at" type="java.sql.Types.TIMESTAMP_WITH_TIMEZONE" remarks="When a role was assigned.">
         <constraints nullable="false"/>
       </column>
       <column name="ref_roles" type="JAVA.UTIL.UUID" remarks="A reference to the role.">
-        <constraints nullable="false" referencedTableSchemaName="core" referencedTableName="roles" referencedColumnNames="id" foreignKeyName="fk_roles"/>
+        <constraints primaryKey="true" primaryKeyName="pk_users_roles" nullable="false" referencedTableSchemaName="core"
+          referencedTableName="roles" referencedColumnNames="id" foreignKeyName="fk_roles"/>
       </column>
       <column name="ref_users" type="JAVA.UTIL.UUID" remarks="A reference to the user.">
-        <constraints nullable="false" referencedTableSchemaName="core" referencedTableName="users" referencedColumnNames="id" foreignKeyName="fk_users"/>
+        <constraints primaryKey="true" primaryKeyName="pk_users_roles" nullable="false" referencedTableSchemaName="core"
+          referencedTableName="users" referencedColumnNames="id" foreignKeyName="fk_users"/>
       </column>
     </createTable>
 
