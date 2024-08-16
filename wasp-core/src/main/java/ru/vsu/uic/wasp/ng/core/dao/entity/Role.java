@@ -1,15 +1,21 @@
 package ru.vsu.uic.wasp.ng.core.dao.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.ToString.Exclude;
 import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -29,7 +35,22 @@ public class Role implements GrantedAuthority {
     @Column(name = "role_description", updatable = false)
     private String description;
 
-    public Role() {}
+    @OneToMany(
+            mappedBy = "role",
+            cascade = CascadeType.MERGE,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    @Exclude
+    private List<UserRole> users = new ArrayList<>();
+
+    public Role() {
+    }
+
+    @Override
+    public String getAuthority() {
+        return "ROLE_" + getCode();
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -46,10 +67,5 @@ public class Role implements GrantedAuthority {
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    @Override
-    public String getAuthority() {
-        return "ROLE_" + getCode();
     }
 }
