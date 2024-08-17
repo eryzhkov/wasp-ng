@@ -184,7 +184,15 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public boolean isAccountNonLocked() {
-        return getStatus().getCode().equalsIgnoreCase(AccountStatus.ACTIVE.toString());
+        return !getStatus().getCode().equalsIgnoreCase(AccountStatus.LOCKED.toString());
+    }
+
+    public boolean isAccountLocked() {
+        return getStatus().getCode().equalsIgnoreCase(AccountStatus.LOCKED.toString());
+    }
+
+    public boolean isBlocked() {
+        return getStatus().getCode().equalsIgnoreCase(AccountStatus.BLOCKED.toString());
     }
 
     @Override
