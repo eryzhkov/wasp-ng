@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -60,6 +61,11 @@ public class WaspAuthenticationProvider implements AuthenticationProvider {
         User user = userRepository.findByLogin(userName);
 
         if (user != null) {
+
+            if (user.getStatus().getCode().equals(AccountStatus.BLOCKED.toString())) {
+                throw new DisabledException("Account '%s' is blocked.".formatted(userName));
+            }
+
             if (user.getAuthenticationType().getCode().equals(WaspAuthType.INT_WASP.toString())) {
                 // Authenticate against the database
                 if (!this.passwordEncoder.matches(providedPassword, user.getPassword())) {
