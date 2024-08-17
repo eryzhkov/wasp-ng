@@ -19,6 +19,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.vsu.uic.wasp.ng.core.security.AccountStatus;
 
@@ -145,11 +146,11 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<Role> roles = new HashSet<>();
+        Set<SimpleGrantedAuthority> grantedAuthorities = new HashSet<>();
         for (UserRole userRole : this.roles) {
-            roles.add(userRole.getRole());
+            grantedAuthorities.add(new SimpleGrantedAuthority(userRole.getRole().getAuthority()));
         }
-        return roles;
+        return grantedAuthorities;
     }
 
     @Override
