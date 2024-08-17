@@ -5,7 +5,6 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-
   <include relativeToChangelogFile="true" file="changes/20240801-01_wasp-core_create-extensions.xml"/>
   <include relativeToChangelogFile="true" file="changes/20240801-02_wasp-core_create-table-auth-types.xml"/>
   <include relativeToChangelogFile="true" file="changes/20240801-03_wasp-core_create-table-user-statuses.xml"/>
@@ -13,5 +12,6 @@
   <include relativeToChangelogFile="true" file="changes/20240801-05_wasp-core_create-table-users.xml"/>
   <include relativeToChangelogFile="true" file="changes/20240801-06_wasp-core_create-table-users-roles.xml"/>
   <include relativeToChangelogFile="true" file="changes/20240817-01_wasp-core_add-locked-status.xml"/>
+  <include relativeToChangelogFile="true" file="changes/20240817-02_wasp-core_alter-table-users.xml"/>
 
 </databaseChangeLog>
