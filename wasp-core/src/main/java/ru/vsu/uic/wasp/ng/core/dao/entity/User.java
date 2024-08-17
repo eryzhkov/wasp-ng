@@ -25,7 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import ru.vsu.uic.wasp.ng.core.security.AccountStatus;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -84,13 +84,22 @@ public class User implements UserDetails, Serializable {
     @JoinColumn(name = "ref_auth_types")
     private AuthenticationType authenticationType;
 
+    @Column(name = "locked_at")
+    private LocalDateTime lockedAt;
+
+    @Column(name = "last_failed_login_at")
+    private LocalDateTime lastFailedLoginAt;
+
+    @Column(name = "failed_logins_counter")
+    private Integer failedLoginsCounter;
+
     @CreatedDate
     @Column(name = "created_at")
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 
     /**
      * Adds a new role to the user.
