@@ -2,7 +2,6 @@ package ru.vsu.uic.wasp.ng.core.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,9 +12,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.vsu.uic.wasp.ng.core.dao.entity.User;
 import ru.vsu.uic.wasp.ng.core.dao.repository.UserRepository;
 import ru.vsu.uic.wasp.ng.core.exception.ExternalSystemException;
@@ -31,16 +30,7 @@ public class WaspAuthenticationProvider implements AuthenticationProvider {
 
     // The role to be automatically added to all authenticated users.
     // The prefix 'ROLE_' here is the Spring Security requirement.
-    private final static String ROLE_AUTHENTICATED_USER = "ROLE_AUTHENTICATED_USER";
-
-    @Value("${spring.security.user.name}")
-    private String embeddedAdminUserName;
-
-    @Value("${spring.security.user.password}")
-    private String embeddedAdminPassword;
-
-    @Value("${spring.security.user.roles:}")
-    private String embeddedAdminRoles;
+    private final static String ROLE_AUTHENTICATED_USER = "ROLE_" + WaspRole.AUTHENTICATED_USER;
 
     private final UserRepository userRepository;
     private final RadiusClient radiusClient;
@@ -48,6 +38,7 @@ public class WaspAuthenticationProvider implements AuthenticationProvider {
 
     private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
+    @Transactional
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
@@ -64,26 +55,6 @@ public class WaspAuthenticationProvider implements AuthenticationProvider {
 
         String userName = authentication.getPrincipal().toString();
         String providedPassword = authentication.getCredentials().toString();
-
-        // Authenticate the embedded user.
-        if (embeddedAdminUserName.equals(userName)) {
-            // Check the password
-            if (!this.passwordEncoder.matches(providedPassword, embeddedAdminPassword)) {
-                log.debug("Failed to authenticate since password does not match stored value");
-                throw new BadCredentialsException("Bad credentials for the '%s' user.".formatted(userName));
-            }
-            // Prepare roles list
-            String[] defaultRoles = embeddedAdminRoles.split(",");
-            UserDetails embeddedUserDetails = org.springframework.security.core.userdetails.User.builder()
-                    .username(embeddedAdminUserName)
-                    .password(embeddedAdminPassword)
-                    .roles(defaultRoles)
-                    .build();
-
-            log.debug("Authenticated embedded user");
-            return createSuccessAuthentication(embeddedUserDetails.getUsername(), authentication,
-                    embeddedUserDetails.getAuthorities());
-        }
 
         // Try to load a user from the database
         User user = userRepository.findByLogin(userName);
@@ -112,13 +83,18 @@ public class WaspAuthenticationProvider implements AuthenticationProvider {
             // Add the default role
             List<SimpleGrantedAuthority> enrichedGrantedAuthorities = new ArrayList<>();
             enrichedGrantedAuthorities.add(new SimpleGrantedAuthority(ROLE_AUTHENTICATED_USER));
+
             Collection<? extends GrantedAuthority> grantedAuthorities = user.getAuthorities();
-            for (GrantedAuthority ga : grantedAuthorities) {
-                SimpleGrantedAuthority sga = (SimpleGrantedAuthority) ga;
-                enrichedGrantedAuthorities.add(sga);
+
+            for (GrantedAuthority grantedAuthority : grantedAuthorities) {
+                SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(
+                        grantedAuthority.getAuthority());
+                enrichedGrantedAuthorities.add(simpleGrantedAuthority);
             }
-            Authentication token = createSuccessAuthentication(user.getUsername(), authentication,
-                    enrichedGrantedAuthorities);
+            UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken
+                    .authenticated(user.getUsername(), authentication.getCredentials(),
+                            this.authoritiesMapper.mapAuthorities(enrichedGrantedAuthorities));
+            token.setDetails(authentication.getDetails());
             log.debug("Authenticated user with token: {}", token);
             return token;
         } else {
@@ -135,12 +111,4 @@ public class WaspAuthenticationProvider implements AuthenticationProvider {
         this.passwordEncoder = passwordEncoder;
     }
 
-    protected Authentication createSuccessAuthentication(Object principal, Authentication authentication,
-            Collection<? extends GrantedAuthority> authorities) {
-        UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken
-                .authenticated(principal, authentication.getCredentials(),
-                        this.authoritiesMapper.mapAuthorities(authorities));
-        token.setDetails(authentication.getDetails());
-        return token;
-    }
 }
