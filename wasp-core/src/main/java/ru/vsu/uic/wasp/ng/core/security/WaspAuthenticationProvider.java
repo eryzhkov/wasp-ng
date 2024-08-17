@@ -39,7 +39,7 @@ public class WaspAuthenticationProvider implements AuthenticationProvider {
     @Value("${spring.security.user.password}")
     private String embeddedAdminPassword;
 
-    @Value("${spring.security.user.roles}")
+    @Value("${spring.security.user.roles:}")
     private String embeddedAdminRoles;
 
     private final UserRepository userRepository;
