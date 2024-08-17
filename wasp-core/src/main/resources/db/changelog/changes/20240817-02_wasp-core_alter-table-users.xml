@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="20240817-02" author="eryzhkov">
+
+    <addColumn tableName="users" schemaName="core">
+      <column name="locked_at" type="java.sql.Types.TIMESTAMP_WITH_TIMEZONE"
+        remarks="The timestamp when the account was locked.">
+        <constraints nullable="true"/>
+      </column>
+      <column name="last_failed_login_at" type="java.sql.Types.TIMESTAMP_WITH_TIMEZONE"
+        remarks="The timestamp of the last failed login.">
+        <constraints nullable="true"/>
+      </column>
+      <column name="failed_logins_counter" type="int" defaultValue="0"
+        remarks="Total number of the failed logins (automatically zeroed after successful login).">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+
+  </changeSet>
+
+</databaseChangeLog>
