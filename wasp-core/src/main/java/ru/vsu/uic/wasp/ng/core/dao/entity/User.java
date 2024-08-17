@@ -4,10 +4,11 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -23,6 +24,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.vsu.uic.wasp.ng.core.security.AccountStatus;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
@@ -34,10 +36,17 @@ import java.util.UUID;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
+@NamedEntityGraph(
+        name = "user-status-authtype-graph",
+        attributeNodes = {
+                @NamedAttributeNode("status"),
+                @NamedAttributeNode("authenticationType")
+        }
+)
 @Getter
 @Setter
 @ToString
-public class User implements UserDetails {
+public class User implements UserDetails, Serializable {
 
     // Set the value automatically. Otherwise, Hibernate can't set the 'userId' property in the UserRoleId object.
     // The reason is that the property 'id' is not set until the User entity is not stored in the database.
@@ -67,11 +76,11 @@ public class User implements UserDetails {
     @Exclude
     private Set<UserRole> roles = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "ref_user_statuses")
     private UserStatus status;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "ref_auth_types")
     private AuthenticationType authenticationType;
 
