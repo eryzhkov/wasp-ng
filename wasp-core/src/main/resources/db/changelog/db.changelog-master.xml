@@ -12,5 +12,6 @@
   <include relativeToChangelogFile="true" file="changes/20240801-04_wasp-core_create-table-roles.xml"/>
   <include relativeToChangelogFile="true" file="changes/20240801-05_wasp-core_create-table-users.xml"/>
   <include relativeToChangelogFile="true" file="changes/20240801-06_wasp-core_create-table-users-roles.xml"/>
+  <include relativeToChangelogFile="true" file="changes/20240817-01_wasp-core_add-locked-status.xml"/>
 
 </databaseChangeLog>
