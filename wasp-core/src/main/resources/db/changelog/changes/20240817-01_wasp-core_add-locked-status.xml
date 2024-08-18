@@ -7,7 +7,7 @@
 
   <changeSet id="20240817-01" author="eryzhkov">
 
-    <insert tableName="user_statuses" schemaName="core">
+    <insert tableName="user_statuses">
       <column name="user_status_code" value="LOCKED"/>
       <column name="user_status_name" value="Залочен на время"/>
     </insert>
