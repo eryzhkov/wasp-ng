@@ -5,9 +5,9 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-  <changeSet id="20240801-05" author="eryzhkov">
+  <changeSet id="20240801-03" author="eryzhkov">
 
-    <createTable tableName="roles" schemaName="core" remarks="The supported user roles.">
+    <createTable tableName="roles" remarks="The supported user roles.">
       <column name="id" type="java.util.UUID" defaultValueComputed="uuid_generate_v4()" remarks="The unique identifier.">
         <constraints primaryKey="true" primaryKeyName="pk_roles" nullable="false"/>
       </column>
@@ -22,25 +22,25 @@
       </column>
     </createTable>
 
-    <insert tableName="roles" schemaName="core">
+    <insert tableName="roles">
       <column name="role_code" value="AUTHENTICATED_USER"/>
       <column name="role_label" value="Аутентифицированный пользователь"/>
       <column name="role_description" value="Присваивается автоматически всем пользователям, успешно прошедшим аутентификацию"/>
     </insert>
 
-    <insert tableName="roles" schemaName="core">
+    <insert tableName="roles">
       <column name="role_code" value="USER_MANAGER"/>
       <column name="role_label" value="Управление пользователями"/>
       <column name="role_description" value="Дает право на добавление пользователя, изменение его профиля и набора ролей."/>
     </insert>
 
-    <insert tableName="roles" schemaName="core">
+    <insert tableName="roles">
       <column name="role_code" value="REPO_MANAGER"/>
       <column name="role_label" value="Управление контентными репозиториями"/>
       <column name="role_description" value="Дает право на создание репозитория, изменение его характеристик и состояния, а также на управление внешними клиентами"/>
     </insert>
 
-    <insert tableName="roles" schemaName="core">
+    <insert tableName="roles">
       <column name="role_code" value="CONTENT_MANAGER"/>
       <column name="role_label" value="Управление контентом в репозиториях"/>
       <column name="role_description" value="Дает право на управление контентом в назначенном репозитории"/>

@@ -1,7 +1,6 @@
 package ru.vsu.uic.wasp.ng.test;
 
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.utility.MountableFile;
 
 public class WaspPostgreSQLContainer extends PostgreSQLContainer<WaspPostgreSQLContainer> {
 
@@ -17,9 +16,7 @@ public class WaspPostgreSQLContainer extends PostgreSQLContainer<WaspPostgreSQLC
             // The database name, database username and the password will be created automatically in the container.
             // The information will be passed to Spring configuration via the @ServiceConnection annotation
             // in the test classes!
-            container = new WaspPostgreSQLContainer().withCopyFileToContainer(
-                    MountableFile.forClasspathResource("init-db.sql"), "/docker-entrypoint-initdb.d/"
-            );
+            container = new WaspPostgreSQLContainer();
         }
         return container;
     }

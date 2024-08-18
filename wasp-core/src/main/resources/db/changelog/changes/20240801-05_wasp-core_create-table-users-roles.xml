@@ -5,18 +5,18 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-  <changeSet id="20240801-07" author="eryzhkov">
+  <changeSet id="20240801-05" author="eryzhkov">
 
-    <createTable tableName="users_roles" schemaName="core" remarks="The roles assigned to a user.">
+    <createTable tableName="users_roles" remarks="The roles assigned to a user.">
       <column name="created_at" type="java.sql.Types.TIMESTAMP_WITH_TIMEZONE" remarks="When a role was assigned.">
         <constraints nullable="false"/>
       </column>
       <column name="ref_roles" type="JAVA.UTIL.UUID" remarks="A reference to the role.">
-        <constraints primaryKey="true" primaryKeyName="pk_users_roles" nullable="false" referencedTableSchemaName="core"
+        <constraints primaryKey="true" primaryKeyName="pk_users_roles" nullable="false"
           referencedTableName="roles" referencedColumnNames="id" foreignKeyName="fk_roles"/>
       </column>
       <column name="ref_users" type="JAVA.UTIL.UUID" remarks="A reference to the user.">
-        <constraints primaryKey="true" primaryKeyName="pk_users_roles" nullable="false" referencedTableSchemaName="core"
+        <constraints primaryKey="true" primaryKeyName="pk_users_roles" nullable="false"
           referencedTableName="users" referencedColumnNames="id" foreignKeyName="fk_users"/>
       </column>
     </createTable>
