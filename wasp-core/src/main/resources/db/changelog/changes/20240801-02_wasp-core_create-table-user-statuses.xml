@@ -5,9 +5,9 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-  <changeSet id="20240801-04" author="eryzhkov">
+  <changeSet id="20240801-02" author="eryzhkov">
 
-    <createTable tableName="user_statuses" schemaName="core" remarks="The supported user statuses.">
+    <createTable tableName="user_statuses" remarks="The supported user statuses.">
       <column name="id" type="java.util.UUID" defaultValueComputed="uuid_generate_v4()" remarks="The unique identifier.">
         <constraints primaryKey="true" primaryKeyName="pk_user_statuses" nullable="false"/>
       </column>
@@ -19,17 +19,17 @@
       </column>
     </createTable>
 
-    <insert tableName="user_statuses" schemaName="core">
+    <insert tableName="user_statuses">
       <column name="user_status_code" value="ACTIVE"/>
       <column name="user_status_name" value="Активный"/>
     </insert>
 
-    <insert tableName="user_statuses" schemaName="core">
+    <insert tableName="user_statuses">
       <column name="user_status_code" value="BLOCKED"/>
       <column name="user_status_name" value="Заблокирован"/>
     </insert>
 
-    <insert tableName="user_statuses" schemaName="core">
+    <insert tableName="user_statuses">
       <column name="user_status_code" value="DELETED"/>
       <column name="user_status_name" value="Удален"/>
     </insert>

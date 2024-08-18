@@ -5,9 +5,9 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-  <changeSet id="20240801-06" author="eryzhkov">
+  <changeSet id="20240801-04" author="eryzhkov">
 
-    <createTable tableName="users" schemaName="core" remarks="The registered users.">
+    <createTable tableName="users" remarks="The registered users.">
       <column name="id" type="java.util.UUID" defaultValueComputed="uuid_generate_v4()" remarks="The unique identifier.">
         <constraints primaryKey="true" primaryKeyName="pk_users" nullable="false"/>
       </column>
@@ -36,10 +36,12 @@
         <constraints nullable="true"/>
       </column>
       <column name="ref_auth_types" type="JAVA.UTIL.UUID" remarks="A reference to the actual user authentication type.">
-        <constraints nullable="false" referencedTableSchemaName="core" referencedTableName="auth_types" referencedColumnNames="id" foreignKeyName="fk_auth_types"/>
+        <constraints nullable="false" referencedTableName="auth_types" referencedColumnNames="id"
+                     foreignKeyName="fk_auth_types"/>
       </column>
       <column name="ref_user_statuses" type="JAVA.UTIL.UUID" remarks="A reference to the actual user status.">
-        <constraints nullable="false" referencedTableSchemaName="core" referencedTableName="user_statuses" referencedColumnNames="id" foreignKeyName="fk_user_statuses"/>
+        <constraints nullable="false" referencedTableName="user_statuses" referencedColumnNames="id"
+                     foreignKeyName="fk_user_statuses"/>
       </column>
     </createTable>
 

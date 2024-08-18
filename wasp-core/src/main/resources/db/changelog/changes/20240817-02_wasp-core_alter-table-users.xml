@@ -7,7 +7,7 @@
 
   <changeSet id="20240817-02" author="eryzhkov">
 
-    <addColumn tableName="users" schemaName="core">
+    <addColumn tableName="users">
       <column name="locked_at" type="java.sql.Types.TIMESTAMP_WITH_TIMEZONE"
         remarks="The timestamp when the account was locked.">
         <constraints nullable="true"/>

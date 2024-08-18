@@ -47,22 +47,7 @@ CREATE DATABASE
 postgres=# \q
 ```
 
-Be sure, the uuid-ossp extension is installed in the database:
-
-```
-$ psql -h localhost -d wasp
-...
-wasp=# CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION
-wasp=# CREATE SCHEMA IF NOT EXISTS core;
-CREATE SCHEMA
-wasp=# \q
-```
-
-It's very important to create the 'core' schema! By default, Liquibase stores its own tables in the schema!
-
-No need to create any tables right now. All needed tables the application creates during start using the Liquibase
-change sets.
+All the needed extensions and tables will be created by the application during start up.
 
 ### What about database in a docker container?
 
@@ -120,7 +105,8 @@ Use the docker-compose.yaml in the project root. The configuration describes all
 to configure PostgreSQL and the application with default settings.
 
 ```
-$ docker compose up
+$ mvn clean package
+$ docker compose up --build
 ```
 
 The application is available at http://localhost:8888/wasp (by default).

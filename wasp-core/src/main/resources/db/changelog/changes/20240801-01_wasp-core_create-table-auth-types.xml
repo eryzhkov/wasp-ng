@@ -5,9 +5,9 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-  <changeSet id="20240801-03" author="eryzhkov">
+  <changeSet id="20240801-01" author="eryzhkov">
 
-    <createTable tableName="auth_types" schemaName="core" remarks="The supported authentication types.">
+    <createTable tableName="auth_types" remarks="The supported authentication types.">
       <column name="id" type="java.util.UUID" defaultValueComputed="uuid_generate_v4()" remarks="The unique identifier.">
         <constraints primaryKey="true" primaryKeyName="pk_auth_types" nullable="false"/>
       </column>
@@ -19,12 +19,12 @@
       </column>
     </createTable>
 
-    <insert tableName="auth_types" schemaName="core">
+    <insert tableName="auth_types">
       <column name="auth_type_code" value="INT_WASP"/>
       <column name="auth_type_name" value="WASP"/>
     </insert>
 
-    <insert tableName="auth_types" schemaName="core">
+    <insert tableName="auth_types">
       <column name="auth_type_code" value="EXT_RADIUS"/>
       <column name="auth_type_name" value="RADIUS-сервер"/>
     </insert>
