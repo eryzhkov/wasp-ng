@@ -3,12 +3,7 @@ package ru.vsu.uic.wasp.ng.core.security;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.LockedException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -207,7 +202,7 @@ public class WaspAuthenticationProvider implements AuthenticationProvider {
             }
         }
         log.debug("Save changes for the user...");
-        userRepository.saveAndFlush(user);
+        userRepository.save(user);
         return isLocked;
     }
 
