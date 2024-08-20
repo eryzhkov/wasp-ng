@@ -7,10 +7,12 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import ru.vsu.uic.wasp.ng.core.config.GitInfoProperties;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
+@EnableJpaRepositories
 @EnableJpaAuditing
 @Slf4j
 public class WaspCoreApplication {
