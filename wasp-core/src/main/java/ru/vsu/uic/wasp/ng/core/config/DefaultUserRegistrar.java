@@ -58,8 +58,8 @@ public class DefaultUserRegistrar implements ApplicationListener<ContextRefreshe
                 defaultUser = new User();
                 defaultUser.setLogin(defaultAdminUserName);
                 defaultUser.setPassword(defaultAdminPassword);
-                defaultUser.setFirstName("");
-                defaultUser.setLastName("");
+                defaultUser.setFirstName("Default");
+                defaultUser.setLastName("User");
                 defaultUser.setFailedLoginsCounter(0);
                 Optional<UserStatus> activeUserStatus = userStatusRepository.findUserStatusByCode(
                         AccountStatus.ACTIVE.toString());
