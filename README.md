@@ -75,6 +75,18 @@ I have not found any simple RADIUS servers to be use specially for development.
 So, the corresponding functionality is disabled in the application.properties by default, and you don't need the RADIUS
 server for the local development.
 
+### What about time zones?
+
+The PostgreSQL instance shall be run with the TZ=UTC time zone. By default, the docker image is already configured with
+the UTC time zone.
+
+The time is stored in the database in UTC (the 'timestampz' type is used).
+
+As for the application, they can be run in its own time zone. For the docker container it is defined in the
+corresponding .env-*-tz file.
+
+When the application is run locally, the current locale is used.
+
 ## How to build the application?
 
 When the application is configured it's time to build one:
@@ -108,6 +120,8 @@ to configure PostgreSQL and the application with default settings.
 $ mvn clean package
 $ docker compose up --build
 ```
+
+Please take a look at the .env-xyz-tz files. They define default time zones for every container.
 
 The application is available at http://localhost:8888/wasp (by default).
 

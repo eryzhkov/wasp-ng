@@ -12,8 +12,8 @@ import ru.vsu.uic.wasp.ng.core.config.GitInfoProperties;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
+@EnableJpaAuditing(dateTimeProviderRef = "auditingDateTimeProvider")
 @EnableJpaRepositories
-@EnableJpaAuditing
 @Slf4j
 public class WaspCoreApplication {
 

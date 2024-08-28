@@ -17,7 +17,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Entity
@@ -43,7 +43,7 @@ public class UserRole implements Serializable {
 
     @CreatedDate
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     @Override
     public boolean equals(Object o) {
